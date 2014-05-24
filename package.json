@@ -1,0 +1,29 @@
+{
+  "name": "seaport-client",
+  "version": "0.0.6",
+  "description": "Seaport client tool to help to publish packages to server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ltebean/seaport-client"
+  },
+  "main": "index.js",
+  "bin": {
+    "seaport": "./bin/seaport.js"
+  },
+  "keywords": [
+    "hybrid",
+    "seaport"
+  ],
+  "scripts": {},
+  "author": {
+    "name": "ltebean",
+    "email": "yucong1118@gmail.com"
+  },
+  "license": "BSD",
+  "dependencies": {
+    "commander": "~2.2.0",
+    "cradle": "^0.6.7",
+    "async": "^0.9.0",
+    "colors": "^0.6.2"
+  }
+}
