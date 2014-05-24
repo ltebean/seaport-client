@@ -8,10 +8,12 @@ program
     .description('config server port and address')
     .option('-h, --host [host]', 'server host')
     .option('-p, --port [port]', 'server port')
+    .option('-d, --db [db]', 'database name')
     .action(function(options) {
         require('../bin/config').execute({
             host: options.host,
-            port: options.port
+            port: options.port,
+            db: options.db
         });
     });
 

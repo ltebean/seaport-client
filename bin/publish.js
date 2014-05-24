@@ -6,7 +6,7 @@ var fs = require('fs');
 var async = require('async');
 var colors = require('colors')
 
-var db = new(cradle.Connection)('http://' + config.host, config.port).database('seaport');
+var db = new(cradle.Connection)('http://' + config.host, config.port).database(config.db);
 
 
 exports.execute = function(options) {
