@@ -1,6 +1,6 @@
 {
   "name": "seaport-client",
-  "version": "0.0.6",
+  "version": "0.1.0",
   "description": "Seaport client tool to help to publish packages to server",
   "repository": {
     "type": "git",
