@@ -9,11 +9,15 @@ program
     .option('-h, --host [host]', 'server host')
     .option('-p, --port [port]', 'server port')
     .option('-d, --db [db]', 'database name')
+    .option('-u, --username [username]', 'username')
+    .option('-s, --password [password]', 'password')
     .action(function(options) {
         require('../bin/config').execute({
             host: options.host,
             port: options.port,
-            db: options.db
+            db: options.db,
+            username: options.username,
+            password: options.password
         });
     });
 

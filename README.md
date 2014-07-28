@@ -6,7 +6,7 @@ Seaport client tool to help to publish packages to server
 
 	Commands:
 
-	    config [options]       config server port and address
+	    config [options]       config server host, port, db, and username, password
 	    publish [options]      package current folder and publish to server
 	    activate [options]     activate a specified version
 	
