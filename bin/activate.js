@@ -44,7 +44,7 @@ exports.execute = function(options) {
             return done(null, docs[i]);
           }
         };
-        done(new Error('package not found'))
+        done(new Error('package not found'));
       });
     },
     function update(doc, done) {
@@ -57,7 +57,7 @@ exports.execute = function(options) {
     }
   ], function(err, result) {
     if (err) {
-      fatal(JSON.stringify(err));
+      fatal(err.message);
     } else {
       console.log('success')
     }

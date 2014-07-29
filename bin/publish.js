@@ -97,7 +97,7 @@ exports.execute = function(options) {
   ], function(err, result) {
     if (err) {
       fs.unlinkSync(zipPath);
-      fatal(JSON.stringify(err));
+      fatal(err.message);
     } else {
       console.log('success')
     }
