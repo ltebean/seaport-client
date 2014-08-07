@@ -19,6 +19,8 @@ exports.execute = function(options) {
   var appName = options.appName;
   var packageName = options.packageName;
   var version = options.version;
+  var username = config.username;
+  var password = config.password;
 
   if (!appName) {
     fatal('app name required');
@@ -30,6 +32,10 @@ exports.execute = function(options) {
 
   if (!version) {
     fatal('verion required');
+  }
+
+  if (!username || !password) {
+    fatal('username and password required');
   }
 
   var zipName = generateZipName(packageName, version);
@@ -47,7 +53,7 @@ exports.execute = function(options) {
       db.view('app/byApp', {
         key: appName
       }, function(err, docs) {
-        if(err){
+        if (err) {
           return done(err);
         }
         for (var i = docs.length - 1; i >= 0; i--) {
@@ -60,6 +66,7 @@ exports.execute = function(options) {
         initPackage({
           name: packageName,
           app: appName,
+          author: username,
           activeVersion: version
         }, function(err, doc) {
           return done(err, doc);
@@ -97,7 +104,7 @@ exports.execute = function(options) {
   ], function(err, result) {
     if (err) {
       fs.unlinkSync(zipPath);
-      fatal(err.message);
+      fatal(JSON.stringify(err));
     } else {
       console.log('success')
     }

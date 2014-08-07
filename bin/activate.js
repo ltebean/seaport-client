@@ -5,8 +5,8 @@ var colors = require('colors')
 
 var db = new(cradle.Connection)('http://' + config.host, config.port, {
   auth: {
-    username: config.username||'',
-    password: config.password||''
+    username: config.username || '',
+    password: config.password || ''
   }
 }).database(config.db);
 
@@ -15,6 +15,8 @@ exports.execute = function(options) {
   var appName = options.appName;
   var packageName = options.packageName;
   var version = options.version;
+  var username = config.username;
+  var password = config.password;
 
   if (!appName) {
     fatal('app name required');
@@ -26,6 +28,10 @@ exports.execute = function(options) {
 
   if (!version) {
     fatal('verion required');
+  }
+
+  if (!username || !password) {
+    fatal('username and password required');
   }
 
   async.waterfall([
@@ -57,7 +63,7 @@ exports.execute = function(options) {
     }
   ], function(err, result) {
     if (err) {
-      fatal(err.message);
+      fatal(JSON.stringify(err));
     } else {
       console.log('success')
     }
