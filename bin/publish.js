@@ -57,17 +57,16 @@ exports.execute = function(options) {
           return done(err);
         }
         for (var i = docs.length - 1; i >= 0; i--) {
-          if (docs[i].value.name == packageName) {
+          if (docs[i].value.packageName == packageName) {
             return done(null, docs[i]);
           }
         };
         // if not found, init the package
         console.log('init package ...')
         initPackage({
-          name: packageName,
-          app: appName,
-          author: username,
-          activeVersion: version
+          packageName: packageName,
+          appName: appName,
+          author: username
         }, function(err, doc) {
           return done(err, doc);
         });
