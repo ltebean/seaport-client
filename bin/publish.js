@@ -1,111 +1,69 @@
-var cradle = require('cradle');
 var config = require('../lib/config').load();
 var cp = require('child_process');
 var path = require('path');
 var fs = require('fs');
 var async = require('async');
 var colors = require('colors')
-
-var db = new(cradle.Connection)('http://' + config.host, config.port, {
-  auth: {
-    username: config.username,
-    password: config.password
-  }
-}).database(config.db);
-
+var request = require('request');
 
 exports.execute = function(options) {
 
-  var appName = options.appName;
+  var host = config.host;
+  var secret = config.secret;
   var packageName = options.packageName;
-  var version = options.version;
-  var username = config.username;
-  var password = config.password;
+  var packageVersion = options.packageVersion;
 
-  if (!appName) {
-    fatal('app name required');
+  if (!host) {
+    fatal('server host required');
   }
 
-  if (!packageName) {
-    fatal('package name required');
+  if (!secret) {
+    fatal('app secret required');
   }
 
-  if (!version) {
+  if (!packageVersion) {
     fatal('verion required');
   }
 
-  if (!username || !password) {
-    fatal('username and password required');
+  if (!packageName) {
+    fatal('packageName required');
   }
 
-  var zipName = generateZipName(packageName, version);
+
+  var zipName = generateZipName(packageName, packageVersion);
   var zipPath = path.join(process.cwd(), zipName);
 
   async.waterfall([
 
     function zipFiles(done) {
-      console.log('packaging %s ...', zipName);
+      console.log('Packaging %s ...', zipName);
       zip(process.cwd(), zipPath, function(err) {
         done(err);
       });
     },
-    function loadPackage(done) {
-      db.view('app/byApp', {
-        key: appName
-      }, function(err, docs) {
-        if (err) {
-          return done(err);
-        }
-        for (var i = docs.length - 1; i >= 0; i--) {
-          if (docs[i].value.packageName == packageName) {
-            return done(null, docs[i]);
-          }
-        };
-        // if not found, init the package
-        console.log('init package ...')
-        initPackage({
-          packageName: packageName,
-          appName: appName,
-          author: username
-        }, function(err, doc) {
-          return done(err, doc);
-        });
-      });
-    },
-    function getDoc(doc, done) {
-      db.get(doc.id, function(err, doc) {
-        done(err, doc);
-      });
-    },
-    function uploadZip(doc, done) {
-      //console.log(doc)
-      console.log('uploading zip ...');
-
-      var attachmentData = {
-        name: zipName,
-        'Content-Type': 'application/zip'
+    function postFile(done) {
+      var formData = {
+        // Pass a simple key-value pair
+        secret: secret,
+        packageName: packageName,
+        packageVersion: packageVersion,
+        file: fs.createReadStream(zipPath),
       };
-      var idAndRevData = {
-        id: doc._id,
-        rev: doc._rev
-      }
-      var readStream = fs.createReadStream(zipPath)
-
-      var writeStream = db.saveAttachment(idAndRevData, attachmentData, function(err, reply) {
-        done(err);
-      })
-      readStream.pipe(writeStream)
+      var url = host + '/api/v1/app/package'
+      request.post({
+        url: url,
+        formData: formData
+      }, function optionalCallback(err, httpResponse, body) {
+        fs.unlinkSync(zipPath);
+        done(err, body);
+      });
     },
-    function removeZip(done) {
-      fs.unlinkSync(zipPath);
-      done(null);
-    }
-  ], function(err, result) {
+
+  ], function(err, body) {
     if (err) {
-      fs.unlinkSync(zipPath);
       fatal(JSON.stringify(err));
     } else {
-      console.log('success')
+      console.log(body)
     }
   });
 }
@@ -115,11 +73,6 @@ function fatal(msg) {
   process.exit(1);
 }
 
-function initPackage(doc, cb) {
-  db.save(doc, function(err, res) {
-    cb(err, res);
-  });
-}
 
 function generateZipName(packageName, version) {
   return packageName + '-' + version + '.zip';
@@ -128,7 +81,6 @@ function generateZipName(packageName, version) {
 function zip(root, zipPath, cb) {
   var command = 'zip -r ' + zipPath + ' ' + '*'.replace(' ', '\\ ');
   var zip = cp.exec(command, []);
-  console.log(command)
   zip.on('exit', function(code) {
     if (code == 0) {
       return cb(null);
