@@ -1,33 +1,32 @@
-var config = require('../lib/config').load();
+var config = require('../lib/config');
 var cp = require('child_process');
 var path = require('path');
 var fs = require('fs');
 var async = require('async');
 var colors = require('colors')
 var client = require('../lib/client');
-require('console.table');
 
 exports.execute = function(options) {
 
-  client.info(function(err, body) {
+  var name = options.name;
+  var password = options.password;
+
+  if (!name) {
+    fatal('user name required');
+  }
+  if (!password) {
+    fatal('password required');
+  }
+
+  client.signup(name, password, function(err, body) {
     if (err) {
       fatal(err)
     }
     if (body.code != 200) {
       fatal(body.message)
     }
-
-    var apps = body.data
-    apps.forEach(function(app) {
-      console.log('App name:', app.name, ' ', 'secret:', app.secret);
-      console.table(app.packages.map(function(pkg) {
-        return {
-          package: pkg.name,
-          version: pkg.version,
-          url: pkg.url
-        }
-      }))
-    })
+    console.log("Success, token saved");
+    config.set('token', body.data);
   })
 }
 

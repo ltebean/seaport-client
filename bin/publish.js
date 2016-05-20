@@ -1,10 +1,11 @@
-var config = require('../lib/config').load();
 var cp = require('child_process');
 var path = require('path');
 var fs = require('fs');
 var async = require('async');
 var colors = require('colors')
 var request = require('request');
+var config = require('../lib/config').load();
+var client = require('../lib/client');
 
 exports.execute = function(options) {
 
@@ -49,22 +50,19 @@ exports.execute = function(options) {
         packageVersion: packageVersion,
         file: fs.createReadStream(zipPath),
       };
-      var url = host + '/api/v1/app/package'
-      request.post({
-        url: url,
-        formData: formData
-      }, function optionalCallback(err, httpResponse, body) {
+      client.publish(formData, function(err, body) {
         fs.unlinkSync(zipPath);
         done(err, body);
-      });
+      })
     },
-
   ], function(err, body) {
     if (err) {
       fatal(JSON.stringify(err));
-    } else {
-      console.log(body)
     }
+    if (body.code != 200) {
+      fatal(body.message);
+    }
+    console.log(body.message);
   });
 }
 

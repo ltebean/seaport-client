@@ -16,6 +16,40 @@ program
   });
 
 program
+  .command('signup')
+  .description('signup a new user')
+  .option('-u, --name [name]', 'user name')
+  .option('-p, --password [password]', 'password')
+  .action(function(options) {
+    require('../bin/signup').execute({
+      name: options.name,
+      password: options.password
+    });
+  });
+
+program
+  .command('login')
+  .description('login as existing user')
+  .option('-u, --name [name]', 'user name')
+  .option('-p, --password [password]', 'password')
+  .action(function(options) {
+    require('../bin/login').execute({
+      name: options.name,
+      password: options.password
+    });
+  });
+
+program
+  .command('create_app')
+  .description('create an app')
+  .option('-n, --name [name]', 'app name')
+  .action(function(options) {
+    require('../bin/createApp').execute({
+      name: options.name,
+    });
+  });
+
+program
   .command('info')
   .description('list the package info')
   .action(function(options) {
