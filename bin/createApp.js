@@ -21,8 +21,7 @@ exports.execute = function(options) {
     if (body.code != 200) {
       fatal(body.message)
     }
-    console.log("Success, app secret saved");
-    config.set('secret', body.data);
+    console.log("Success");
   })
 }
 

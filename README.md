@@ -25,6 +25,12 @@ After setup the server, make seaport-client point to the server by:
 seaport config -h http://localhost:8080
 ```
 
+#### Switch profile
+Each profile has its own config, you can switch profile by:
+```bash
+seaport profile -n profileName
+```
+
 #### Create a user
 ```bash
 seaport signup -n username -p password
@@ -45,8 +51,9 @@ After the app is created, the app secret will be saved locally, you can use `sea
 
 #### Publish the package
 ```bash
-seaport publish -p packageName -v versionNumber
+seaport publish -a appName -p packageName -v versionNumber
 ```
+
 This command will pack the current working directory into a zip file and publish to server
 
 #### List app and package info

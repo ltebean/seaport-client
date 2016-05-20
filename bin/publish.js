@@ -10,7 +10,7 @@ var client = require('../lib/client');
 exports.execute = function(options) {
 
   var host = config.host;
-  var secret = config.secret;
+  var appName = options.appName;
   var packageName = options.packageName;
   var packageVersion = options.packageVersion;
 
@@ -18,8 +18,8 @@ exports.execute = function(options) {
     fatal('server host required');
   }
 
-  if (!secret) {
-    fatal('app secret required');
+  if (!appName) {
+    fatal('app name required');
   }
 
   if (!packageVersion) {
@@ -37,7 +37,7 @@ exports.execute = function(options) {
   async.waterfall([
 
     function zipFiles(done) {
-      console.log('Packaging %s ...', zipName);
+      console.log('Packing %s ...', zipName);
       zip(process.cwd(), zipPath, function(err) {
         done(err);
       });
@@ -45,7 +45,7 @@ exports.execute = function(options) {
     function postFile(done) {
       var formData = {
         // Pass a simple key-value pair
-        secret: secret,
+        appName: appName,
         packageName: packageName,
         packageVersion: packageVersion,
         file: fs.createReadStream(zipPath),
@@ -73,7 +73,7 @@ function fatal(msg) {
 
 
 function generateZipName(packageName, version) {
-  return packageName + '-' + version + '.zip';
+  return packageName + '@' + version + '.zip';
 }
 
 function zip(root, zipPath, cb) {
