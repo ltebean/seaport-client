@@ -54,6 +54,16 @@ After the app is created, the app secret will be saved locally, you can use `sea
 seaport publish -a appName -p packageName -v versionNumber
 ```
 
+Alternatively, you can specify the app name in your `package.json`, then seaport will read package name and version number from it
+
+```
+"seaport": {
+	"zipRoot": "./build",
+    "appName": "Test"
+}
+
+```
+
 This command will pack the current working directory into a zip file and publish to server
 
 #### List app and package info
