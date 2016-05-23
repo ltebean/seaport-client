@@ -21,11 +21,11 @@ exports.execute = function(options) {
     if (body.code != 200) {
       fatal(body.message)
     }
-    console.log("Success");
+    console.log('Success:'.green, 'run "seaport info" to get the app secret');
   })
 }
 
 function fatal(msg) {
-  console.log('%s %s', 'error:'.red, msg);
+  console.log('%s %s', 'Error:'.red, msg);
   process.exit(1);
 }

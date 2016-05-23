@@ -13,6 +13,17 @@ exports.execute = function(options) {
   var appName = options.appName;
   var packageName = options.packageName;
   var packageVersion = options.packageVersion;
+  var zipRoot = process.cwd();
+
+  var packageJsonPath = path.join(process.cwd(), 'package.json')
+  if (fs.existsSync(packageJsonPath)) {
+    console.log('Found package.json:'.green, packageJsonPath);
+    data = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+    appName = data.seaport && data.seaport.appName;
+    zipRoot = data.seaport && path.join(process.cwd(), data.seaport.zipRoot);
+    packageName = data.name;
+    packageVersion = data.version;
+  }
 
   if (!host) {
     fatal('server host required');
@@ -37,12 +48,13 @@ exports.execute = function(options) {
   async.waterfall([
 
     function zipFiles(done) {
-      console.log('Packing %s ...', zipName);
-      zip(process.cwd(), zipPath, function(err) {
+      console.log('Packing:'.green, zipRoot);
+      zip(zipRoot, zipPath, function(err) {
         done(err);
       });
     },
     function postFile(done) {
+      console.log('Pushing to app:'.green, appName);
       var formData = {
         // Pass a simple key-value pair
         appName: appName,
@@ -62,12 +74,12 @@ exports.execute = function(options) {
     if (body.code != 200) {
       fatal(body.message);
     }
-    console.log(body.message);
+    console.log(body.message.green);
   });
 }
 
 function fatal(msg) {
-  console.log('%s %s', 'error:'.red, msg);
+  console.log('%s %s', 'Error:'.red, msg);
   process.exit(1);
 }
 
@@ -77,7 +89,7 @@ function generateZipName(packageName, version) {
 }
 
 function zip(root, zipPath, cb) {
-  var command = 'zip -r ' + zipPath + ' ' + '*'.replace(' ', '\\ ');
+  var command = 'cd ' + root + ' && zip -r ' + zipPath + ' ' + '*'.replace(' ', '\\ ');
   var zip = cp.exec(command, []);
   zip.on('exit', function(code) {
     if (code == 0) {

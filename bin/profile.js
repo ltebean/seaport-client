@@ -11,12 +11,12 @@ exports.execute = function(options) {
   var name = options.name;
 
   if (!name) {
-     console.log('Current profile:', profile.currentProfile());
+     console.log('Current profile:'.green, profile.currentProfile());
      return;
   }
 
   profile.useProfile(name);
-  console.log('Switched to profile:', name)
+  console.log('Switched to profile:'.green, name)
 
 }
 

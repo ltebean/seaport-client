@@ -25,12 +25,12 @@ exports.execute = function(options) {
     if (body.code != 200) {
       fatal(body.message)
     }
-    console.log("Success, token saved");
+    console.log('Success:'.green, 'token saved');
     config.set('token', body.data);
   })
 }
 
 function fatal(msg) {
-  console.log('%s %s', 'error:'.red, msg);
+  console.log('%s %s', 'Error:'.red, msg);
   process.exit(1);
 }

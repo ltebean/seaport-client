@@ -19,7 +19,7 @@ exports.execute = function(options) {
 
     var apps = body.data
     apps.forEach(function(app) {
-      console.log('App name:', app.name, ' ', 'secret:', app.secret);
+      console.log('App name: %s secret %s'.green, app.name, app.secret);
       console.table(app.packages.map(function(pkg) {
         return {
           package: pkg.name,
@@ -32,6 +32,6 @@ exports.execute = function(options) {
 }
 
 function fatal(msg) {
-  console.log('%s %s', 'error:'.red, msg);
+  console.log('%s %s', 'Error:'.red, msg);
   process.exit(1);
 }
