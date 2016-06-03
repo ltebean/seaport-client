@@ -13,7 +13,7 @@ exports.execute = function(options) {
   var appName = options.appName;
   var packageName = options.packageName;
   var packageVersion = options.packageVersion;
-  var zipRoot = process.cwd();
+  var zipRoot = options.zipRoot || process.cwd();
 
   var packageJsonPath = path.join(process.cwd(), 'package.json')
   if (fs.existsSync(packageJsonPath)) {

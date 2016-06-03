@@ -70,11 +70,13 @@ program
   .option('-a, --appName [appName]', 'app name')
   .option('-p, --packageName [packageName]', 'package name')
   .option('-v, --packageVerion [packageVerion]', 'package verion')
+  .option('-z, --zipRoot [zipRoot]', 'zip root')
   .action(function(options) {
     require('../bin/publish').execute({
       appName: options.appName,
       packageName: options.packageName,
-      packageVersion: options.packageVerion
+      packageVersion: options.packageVerion,
+      zipRoot: options.zipRoot
     });
   });
 
